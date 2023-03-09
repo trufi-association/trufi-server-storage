@@ -1,0 +1,28 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "feedback server",
+  "main": "build/index.js",
+  "scripts": {
+    "ini": "cls && npm start",
+    "start": "tsc && node build/index.js",
+    "dev": "npx nodemon --watch './src/**/*.ts' --exec 'npx ts-node' ./src/index.ts",
+    "clean": "tsc --build --clean"
+  },
+  "author": "Edson Vasquez",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mongoose": "^6.9.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.17",
+    "@types/node": "^18.14.0",
+    "@typescript-eslint/eslint-plugin": "^5.52.0",
+    "@typescript-eslint/parser": "^5.52.0",
+    "eslint": "^8.34.0",
+    "typescript": "^4.9.5"
+  }
+}

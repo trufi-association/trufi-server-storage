@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  user_feedback_mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data/db:/data/db
+    restart: unless-stopped
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  user_feedback:
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      MONGODB_URL: mongodb://user_feedback_mongo:27017/
+    restart: unless-stopped
+    depends_on:
+      user_feedback_mongo:
+        condition: service_healthy
+
+  mongo-express:
+    image: mongo-express
+    container_name: user_feedback_mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=user_feedback_mongo
+networks:
+  default:
+    name: trufi-server
