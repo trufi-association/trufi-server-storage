@@ -1,6 +1,7 @@
-import { Icon, LatLngExpression, PathOptions } from 'leaflet';
+import { Icon } from 'leaflet';
 import { Marker, Polyline, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import { SegmentLine } from './../model';
 
 const iconDestination = new Icon({
     iconUrl: process.env.PUBLIC_URL + '/marker-origin.svg',
@@ -11,18 +12,16 @@ const iconOrigin = new Icon({
     iconSize: [27, 27]
 });
 
-export default function Segment({ polyline }: { polyline: LatLngExpression[] }) {
-    const lineOptions = { color: 'black' };
-
+export default function Segment({ segment }: { segment: SegmentLine }) {
     return (
         <>
-            <Polyline pathOptions={lineOptions} positions={polyline} />
-            {polyline != null && polyline[0] != null ? <Marker position={polyline[0]} icon={iconOrigin}>
+            <Polyline pathOptions={segment.options} positions={segment.polyline} />
+            {segment.polyline != null && segment.polyline[0] != null ? <Marker position={segment.polyline[0]} icon={iconOrigin}>
                 <Popup>
                     Origin
                 </Popup>
             </Marker> : null}
-            {polyline != null && polyline[polyline.length - 1] != null ? <Marker position={polyline[polyline.length - 1]} icon={iconDestination}>
+            {segment.polyline != null && segment.polyline[segment.polyline.length - 1] != null ? <Marker position={segment.polyline[segment.polyline.length - 1]} icon={iconDestination}>
                 <Popup>
                     Destini
                 </Popup>

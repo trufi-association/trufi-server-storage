@@ -1,12 +1,13 @@
-import { useState } from 'react';
-import { latLng, LatLngBounds, LatLngBoundsExpression, LatLngExpression } from 'leaflet';
 import { Button, AppBar, Dialog, Fab, IconButton, Toolbar, Typography } from '@mui/material';
+import { FeedBack, POSITION, ROUTEPOINT, SegmentIndex, SegmentLine } from './../model';
+import { latLng, LatLng, LatLngBounds, LatLngBoundsExpression } from 'leaflet';
 import { MapContainer, TileLayer, useMap } from 'react-leaflet';
+import { useState } from 'react';
 import MapIcon from '@mui/icons-material/Map';
 import CloseIcon from '@mui/icons-material/Close';
 import CropIcon from '@mui/icons-material/Crop';
 import 'leaflet/dist/leaflet.css';
-import { FeedBack, SEGMENT } from './../model';
+import { getRouteShape } from './../service';
 import Segment from './segment';
 
 type boundsParams = {
@@ -33,49 +34,95 @@ function SetBoundsRectangles({ bounds }: boundsParams) {
 }
 
 
-export default function FullScreenDialog({ feedback }: { feedback: FeedBack }) {
+export default function FullScreenDialog({ feedback, setInProgress }: { feedback: FeedBack, setInProgress: React.Dispatch<React.SetStateAction<boolean>> }) {
     const position = latLng(-17.392600, -66.158787);
 
     const [open, setOpen] = useState(false);
     const [bounds, setBounds] = useState<LatLngBounds>(new LatLngBounds(position, position));
-    const [polylines, setPolylines] = useState<LatLngExpression[][]>([]);
+    const [polylines, setPolylines] = useState<SegmentLine[]>([]);
 
-    const addSegment = async (segment: SEGMENT): Promise<LatLngExpression[]> => {
-        return [
-            latLng(segment.start.lat, segment.start.lng),
-            latLng(segment.end.lat, segment.end.lng)
-        ];
+    const comparePoints = (a: POSITION, b: ROUTEPOINT): boolean => {
+        return a.lat === b.lat && a.lng === b.lon;
+    };
+
+    const compareSegment = (is: SegmentIndex, pos: ROUTEPOINT, index: number) => {
+        if (comparePoints(is.segment.start, pos))
+            is.startIndex = index;
+
+        if (comparePoints(is.segment.end, pos))
+            is.endIndex = index;
+    };
+
+
+    const toSegment = (is: SegmentIndex, routeLine: LatLng[], lines: SegmentLine[]) => {
+        if (!is.startIndex) return [];
+        if (!is.endIndex) return [];
+
+        lines.push({
+            polyline: routeLine.slice(is.startIndex, is.endIndex),
+            options: { color: 'blue' }
+        });
+    };
+
+    const convertToLines = (routePoints: ROUTEPOINT[], feedback: FeedBack): SegmentLine[] => {
+        const bounds = new LatLngBounds(position, position);
+        const lines: SegmentLine[] = [];
+        let indexSegment: SegmentIndex | null = null;
+        let indexSegments: SegmentIndex[] | null = null;
+
+        if (feedback.segment)
+            indexSegment = { segment: feedback.segment };
+
+        if (feedback.segments)
+            indexSegments = feedback.segments.map(segment => { return { segment }; });
+
+        const routeLine = routePoints.map((position, index) => {
+            if (indexSegment) compareSegment(indexSegment, position, index);
+
+            if (indexSegments) indexSegments.forEach(is => compareSegment(is, position, index));
+
+            const latLngPosition = latLng(position.lat, position.lon);
+
+            bounds.extend(latLngPosition);
+
+            return latLngPosition;
+        });
+
+        lines.push({ polyline: routeLine, options: { color: 'red' } });
+
+        if (indexSegment) {
+            toSegment(indexSegment, routeLine, lines);
+        }
+
+        if (indexSegments) {
+            indexSegments.forEach(is => {
+                toSegment(is, routeLine, lines);
+            });
+        }
+
+        setBounds(bounds);
+
+        return lines;
     };
 
     const getRoute = async () => {
-        setOpen(true);
+        setInProgress(true);
 
-        const lines: LatLngExpression[][] = [];
+        const routePoints = await getRouteShape(feedback.transportCode);
 
-        if (feedback.segment) {
-            lines.push(await addSegment(feedback.segment));
-        }
-
-        if (!feedback.segments) {
-            setPolylines(lines);
+        if (routePoints.length === 0) {
+            setInProgress(false);
             return;
         }
 
-        for (const s of feedback.segments) {
-            lines.push(await addSegment(s));
-        }
+        const lines = convertToLines(routePoints, feedback);
 
-        const bounds = new LatLngBounds(lines[0][0], lines[0][0]);
 
-        const extendsPoint = (bounds: LatLngBounds) =>
-            (point: LatLngExpression) => { bounds.extend(point); };
-
-        lines.forEach(l => {
-            l.forEach(extendsPoint(bounds));
-        });
-
-        setBounds(bounds);
         setPolylines(lines);
+
+        setInProgress(false);
+
+        setOpen(true);
     };
 
     const handleClose = () => {
@@ -124,7 +171,7 @@ export default function FullScreenDialog({ feedback }: { feedback: FeedBack }) {
                     />
                     {polylines.map((line, index) =>
                         <div key={index}>
-                            <Segment polyline={line} />
+                            <Segment segment={line} />
                         </div>
                     )}
                     <SetBoundsRectangles bounds={bounds} />

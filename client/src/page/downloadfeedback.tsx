@@ -1,10 +1,13 @@
 import { FeedBack } from './../model';
-import { Button, ButtonGroup } from '@mui/material';
+import { Button, ButtonGroup, LinearProgress } from '@mui/material';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FullScreenDialog from './viewer';
 import { downloadFile } from './home';
+import { useState } from 'react';
 
 export function DownloadFeedback({ feedback }: { feedback: FeedBack }) {
+    const [inProgress, setInProgress] = useState(false);
+
     const downloadJsonFile = () => {
         downloadFile(feedback._id, JSON.stringify(feedback), 'json');
     };
@@ -20,8 +23,9 @@ export function DownloadFeedback({ feedback }: { feedback: FeedBack }) {
                 >
                     DOWNLOAD
                 </Button>
-                <FullScreenDialog feedback={feedback} />
+                <FullScreenDialog feedback={feedback} setInProgress={setInProgress} />
             </ButtonGroup>
+            {inProgress ? <LinearProgress /> : null}
         </div>
     );
 }

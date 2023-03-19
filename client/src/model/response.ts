@@ -1,3 +1,4 @@
+import { ROUTEPOINT } from './segment';
 
 type QueryResponse<DATA> = {
     error?: boolean
@@ -5,4 +6,10 @@ type QueryResponse<DATA> = {
     data?: DATA
 }
 
-export type { QueryResponse };
+type RouteResponse = {
+    pattern: {
+        geometry: ROUTEPOINT[]
+    }
+}
+
+export type { QueryResponse, RouteResponse };
