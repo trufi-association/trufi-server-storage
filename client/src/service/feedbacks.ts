@@ -3,7 +3,7 @@ import { ENDPOINT, FeedBack, METHOD, QueryResponse, RequestConfig } from './../m
 
 const getFeedbacks = async (): Promise<FeedBack[]> => {
     const config: RequestConfig = {
-        serverUrl: `${window.location.href}/apirest`,
+        serverUrl: `${window.location.href}apirest`,
         endPoint: ENDPOINT.feedbacks,
         info: { method: METHOD.GET }
     };

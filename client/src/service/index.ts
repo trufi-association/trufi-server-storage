@@ -4,9 +4,7 @@ import { getSurveys } from './surveys';
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 import { getRouteShape } from './route';
 
-const uri = process.env.NODE_ENV === 'production'
-    ? `${window.location.href}/user_tracking_graphql`
-    : 'https://bo-cbba.sa.api.trufi-association.org/otp/index/graphql';
+const uri = 'https://bo-cbba.sa.api.trufi-association.org/otp/index/graphql';
 
 const client = new ApolloClient({
     link: new HttpLink({ uri }),
