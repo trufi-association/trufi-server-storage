@@ -3,7 +3,7 @@ import { ENDPOINT, METHOD, QueryResponse, RequestConfig, Survey } from './../mod
 
 const getSurveys = async (): Promise<Survey[]> => {
     const config: RequestConfig = {
-        serverUrl: 'http://localhost:3000/apirest',
+        serverUrl: `${window.location.href}/apirest`,
         endPoint: ENDPOINT.surveys,
         info: { method: METHOD.GET }
     };
