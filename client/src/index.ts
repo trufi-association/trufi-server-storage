@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(express.static('./home/build'));
 
 const enableServerMessage = () => {
-    console.log(`Server listening on http://localhost:${config.port}/apirest`);
+    console.log(`Server listening on http://localhost:3000/apirest`);
 };
 
 app.listen(3000, enableServerMessage);
