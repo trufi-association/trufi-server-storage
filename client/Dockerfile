@@ -6,6 +6,6 @@ COPY . .
 WORKDIR /app
 RUN npm install
 
-EXPOSE 4000
+EXPOSE 3000
 
 ENTRYPOINT [ "npm", "start" ]
