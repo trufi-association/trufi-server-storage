@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { Button, FormControl, InputBase, InputLabel } from '@mui/material';
+import { Button, FormControl, InputBase, InputLabel, LinearProgress } from '@mui/material';
 import { AuthContext } from './../state';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -64,6 +64,7 @@ export default function LoginPage() {
     });
 
     const [logError, setLogError] = useState(false);
+    const [loging, setLoging] = useState(false);
 
     useEffect(() => {
         const user = localStorage.getItem('user');
@@ -87,10 +88,13 @@ export default function LoginPage() {
 
     const onSubmit: React.ChangeEventHandler<HTMLFormElement> =
         async (event) => {
+            setLoging(true);
             event.preventDefault();
             localStorage.setItem('user', form.user);
             const { user, password } = form;
             const resp = await login(user, password);
+
+            setLoging(false);
 
             setLogError(!resp);
         };
@@ -111,7 +115,7 @@ export default function LoginPage() {
             >
                 <div>
                     <Typography component="h1">
-                        <b>Welcome!</b>
+                        <b>Welcome to Trufi's storage!</b>
                     </Typography>
                     <Typography >Sign in to continue.</Typography>
                 </div>
@@ -149,14 +153,17 @@ export default function LoginPage() {
                                 </FormControl>
                             </Grid>
                             <Grid item xs>
-                                <Button
-                                    variant="contained"
-                                    type="submit"
-                                    sx={{ mt: 1, marginTop: 3 }}
-                                    disabled={!isFormOk()}
-                                >
-                                    Log In
-                                </Button>
+                                {
+                                    loging ? <h2>logging<LinearProgress /></h2>
+                                        : <Button
+                                            variant="contained"
+                                            type="submit"
+                                            sx={{ mt: 1, marginTop: 3 }}
+                                            disabled={!isFormOk()}
+                                        >
+                                            Log In
+                                        </Button>
+                                }
                             </Grid>
                         </Grid>
                     </Box>

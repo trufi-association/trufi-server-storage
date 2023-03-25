@@ -14,11 +14,11 @@ const errorHandler = <DATA>(data: BehaviorSubject<DATA>, defaultValue: DATA) =>
     };
 
 export default class Store {
-    feedbacks: BSFeedbacks = new BehaviorSubject<FeedBack[]>([]);
-    surveys: BSSurveys = new BehaviorSubject<Survey[]>([]);
-    clear: any = null;
+    feedbacks: BSFeedbacks;
+    surveys: BSSurveys;
     constructor() {
-        this.update();
+        this.feedbacks = new BehaviorSubject<FeedBack[]>([]);
+        this.surveys = new BehaviorSubject<Survey[]>([]);
     }
     async update() {
         getFeedbacks()
