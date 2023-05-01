@@ -10,7 +10,7 @@ export const AppRouter = () => {
     useEffect(() => { verifyToken(); }, [logged]);
 
     return (
-        <BrowserRouter basename={'user_feedback'}>
+        <BrowserRouter>
             <Routes>
                 <Route
                     path="/"
