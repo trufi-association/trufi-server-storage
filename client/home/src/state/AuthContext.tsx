@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { AuthProps, Props, TAppContext } from './../model';
+import { store } from './..';
 
 export const AuthContext = React.createContext<TAppContext>({
     logged: false,
@@ -21,6 +22,7 @@ export const AuthProvider = ({ children }: Props) => {
         if (resp) {
             localStorage.setItem('token', 'hasToken1234');
             setAuth({ logged: true, email, password });
+            await store.update();
             return true;
         }
 

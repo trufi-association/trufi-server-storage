@@ -14,17 +14,23 @@ services:
       timeout: 10s
       retries: 5
 
-  user_feedback:
-    build: .
-    # ports:
-    #   - 3000:3000
+  uf_server:
+    build: ./server
+    #ports:
+    #  - 3000:3000
     environment:
       MONGODB_URL: mongodb://user_feedback_mongo:27017/
     restart: unless-stopped
     depends_on:
       user_feedback_mongo:
         condition: service_healthy
-        
+  
+  uf_client:
+    build: ./client
+    #ports:
+    #  - 4000:3000
+    restart: unless-stopped
+
 networks:
   default:
     name: trufi-server

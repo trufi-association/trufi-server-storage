@@ -3,13 +3,11 @@ FROM node:18.12
 WORKDIR /app
 COPY . .
 
-WORKDIR /app/client
+WORKDIR /app/home
 RUN npm install
 RUN npm run build
-RUN mv ./build/ ../server/www
-RUN mv ./privacy_policy/ ../server/www/privacy_policy
 
-WORKDIR /app/server
+WORKDIR /app
 RUN npm install
 
 EXPOSE 3000

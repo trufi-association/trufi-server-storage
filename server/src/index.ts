@@ -8,7 +8,6 @@ import { initRestServer } from './rest';
 const app = express();
 
 app.use(cors());
-app.use(express.static('www'));
 app.use(express.json());
 
 const initServer = async (config: ServerConfig) => {
