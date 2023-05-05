@@ -12,9 +12,13 @@ Documentation created with Swagger and Docker.
 
 ### How to Run
 
+Enter in api-documentation folder
 ```
 cd api-documentation
+```
 
+Run docker container
+```
 docker compose up -d
 ```
 
