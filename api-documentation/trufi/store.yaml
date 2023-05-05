@@ -1,0 +1,308 @@
+openapi: 3.0.3
+info:
+  title: Trufi Store - Api
+  version: 1.0.0
+tags:
+  - name: feedback
+    description: Everything about Feedbacks
+  - name: survey
+    description: Everything about Surveys
+paths:
+  /feedbacks:
+    get:
+      tags:
+        - feedback
+      summary: Returns all feedbacks
+      description: Returns all feedbacks
+      operationId: getAllFeedbacks
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/FeedbacksResponse'          
+        '400':
+          description: Invalid status value
+  /feedback:
+    post:
+      tags:
+        - feedback
+      summary: Add a new Feedback to the store
+      description: Add a new Feedback to the store
+      operationId: addFeedback
+      requestBody:
+        description: Create a new Feedback in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Feedback'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackResponse'          
+        '405':
+          description: Invalid input
+    get:
+      tags:
+        - feedback
+      summary: Finds a Feedback by id
+      operationId: findFeedbackById
+      requestBody:
+        description: Finds a Feedback by id
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackResponse'          
+        '400':
+          description: Invalid status value
+  /surveys:
+    get:
+      tags:
+        - survey
+      summary: Returns all Surveys
+      description: Returns all Surveys
+      operationId: getAllSurveys
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SurveysResponse'          
+        '400':
+          description: Invalid status value
+  /survey:
+    post:
+      tags:
+        - survey
+      summary: Add a new Survey to the store
+      description: Add a new Survey to the store
+      operationId: addSurvey
+      requestBody:
+        description: Create a new Survey in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Survey'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SurveyResponse'          
+        '405':
+          description: Invalid input
+    get:
+      tags:
+        - survey
+      summary: Finds Survey by id
+      description: Finds Survey by id
+      operationId: findSurveyById
+      requestBody:
+        description: Finds a Survey by id
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SurveyId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SurveyResponse'          
+        '400':
+          description: Invalid status value
+components:
+  schemas:
+    FeedbacksResponse:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example:
+            - OK
+            - The server is under maintenance
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Feedback'
+      required:
+        - message
+    FeedbackResponse:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example:
+            - OK
+            - The server is under maintenance
+        data:
+            $ref: '#/components/schemas/Feedback'
+      required:
+        - message
+    SurveysResponse:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example:
+            - OK
+            - The server is under maintenance
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Survey'
+      required:
+        - message
+    SurveyResponse:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example:
+            - OK
+            - The server is under maintenance
+        data:
+            $ref: '#/components/schemas/Survey'
+      required:
+        - message
+    POSITION:
+      type: object
+      properties:
+        lat:
+          type: integer
+          format: int64
+          example: -66.863287
+        lng:
+          type: integer
+          format: int64
+          example: 17.972733
+      required:
+        - lat
+        - lng
+    SEGMENT:
+      type: object
+      properties:
+        start:
+          $ref: '#/components/schemas/POSITION'
+        end:
+          $ref: '#/components/schemas/POSITION'
+      required:
+        - start
+        - end
+    Feedback:
+      type: object
+      properties:
+        _id:
+          type: string
+        idDevice:
+          type: string
+        idEdition:
+          type: string
+        transportCode:
+          type: string
+        typeRoute:
+          type: string
+          enum:
+            - FULL_ROUTE
+            - PARTIAL_ROUTE
+        state:
+          type: string
+          enum:
+            - NOT_AVAILABLE
+            - CHANGED
+            - OTHERS
+        userLocation:
+          $ref: '#/components/schemas/POSITION'
+        description:
+          type: string
+        phone:
+          type: string
+        segment:
+          require: true
+          $ref: '#/components/schemas/POSITION'
+        segments:
+          type: array
+          items:
+            $ref: '#/components/schemas/SEGMENT'
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - idDevice
+        - idEdition
+        - transportCode
+        - typeRoute
+        - state
+        - segment
+    FeedbackId:
+      type: object
+      properties:
+        id:
+          type: string
+          example:
+            - feedback_id_01
+            - ksd877s9a67698_022
+      required:
+        - id
+    Survey:
+      type: object
+      properties:
+        _id:
+          type: string
+        idDevice:
+          type: string
+        transportCode:
+          type: string
+        surveyData:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - idDevice
+        - transportCode
+        - surveyData
+    SurveyId:
+      type: object
+      properties:
+        id:
+          type: string
+          example:
+            - survey_id_01
+            - ksd877s9a67698_022
+      required:
+        - id

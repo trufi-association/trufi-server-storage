@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  trufi-storage:
+    image: swaggerapi/swagger-ui
+    container_name: "api-documentation"
+    ports:
+      - 8080:8080
+    volumes:
+      - ./trufi/store.yaml:/store.yaml
+    environment:
+      SWAGGER_JSON: /store.yaml
+  
