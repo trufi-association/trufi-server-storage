@@ -14,10 +14,6 @@ const initRestServer = (app: Express, config: ServerConfig) => {
     app.get('/apirest/feedback', getFeedBack);
     app.get('/apirest/feedbacks', getFeedBacks);
 
-    app.post('/apirest/survey', addSurvey);
-    app.get('/apirest/survey', getSurvey);
-    app.get('/apirest/surveys', getSurveys);
-
     app.listen(config.port, enableServerMessage(config));
 };
 

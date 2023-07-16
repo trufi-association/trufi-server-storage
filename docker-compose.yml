@@ -14,7 +14,7 @@ services:
       timeout: 10s
       retries: 5
 
-  uf_server:
+  user_feedback_server:
     build: ./server
     #ports:
     #  - 3000:3000
@@ -25,12 +25,6 @@ services:
       user_feedback_mongo:
         condition: service_healthy
   
-  uf_client:
-    build: ./client
-    #ports:
-    #  - 4000:3000
-    restart: unless-stopped
-
 networks:
   default:
     name: trufi-server
